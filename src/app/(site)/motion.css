@@ -1,0 +1,184 @@
+/* Interaction tokens: quick feedback, short entrances, no scroll listeners. */
+.home-inventory-loading {
+  min-height: 900px;
+  padding-top: 60px;
+  color: #555;
+}
+.reference-site {
+  --motion-fast: 160ms;
+  --motion-enter: 320ms;
+  --motion-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reference-site button {
+  touch-action: manipulation;
+}
+.reference-site .whatsapp-heading h2:focus {
+  outline: none;
+}
+.reference-site .mobile-nav > button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 48px;
+  padding: 14px 24px;
+  text-align: left;
+}
+.reference-site .footer-main > div > button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  text-align: left;
+  color: #eee;
+  font-size: 13px;
+}
+.reference-site .reference-whatsapp > button {
+  width: 100%;
+  color: white;
+  text-align: left;
+}
+.reference-site .whatsapp-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 12px 32px 18px;
+  font-size: 30px;
+}
+.reference-site .whatsapp-brand small {
+  display: block;
+  font-size: 10px;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 6px;
+  margin-top: 3px;
+}
+.reference-site .whatsapp-symbol {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  position: relative;
+}
+.whatsapp-symbol-badge {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 3px solid white;
+  border-radius: 50%;
+  background: #087a39;
+  color: white;
+}
+.reference-site .whatsapp-dialog {
+  width: min(600px, calc(100% - 28px));
+}
+.reference-site .whatsapp-dialog-inner {
+  padding: 36px;
+}
+.reference-site .whatsapp-heading h2 {
+  font-size: clamp(23px, 3vw, 28px);
+  text-wrap: balance;
+}
+.whatsapp-credit-notice {
+  background: #faf5ee;
+  border: 1px solid #e5d8c5;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+}
+.whatsapp-credit-notice > span {
+  color: #86541c;
+  display: inline-flex;
+  margin-bottom: 12px;
+}
+.whatsapp-credit-notice h3 {
+  margin-bottom: 12px;
+}
+.whatsapp-credit-notice p {
+  font-size: 14px;
+  color: #554a3b;
+}
+.whatsapp-credit-notice p + p {
+  margin-top: 12px;
+}
+.whatsapp-error a {
+  text-decoration: underline;
+  font-weight: 700;
+}
+.whatsapp-availability {
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #f5f5f5;
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 20px;
+}
+.whatsapp-availability a {
+  text-decoration: underline;
+  color: #a90000;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .reference-site .reference-hero-message[data-animated="true"] {
+    animation: drive-enter 480ms var(--motion-ease);
+  }
+  .reference-site .whatsapp-step {
+    animation: drive-enter var(--motion-enter) var(--motion-ease);
+  }
+  .reference-site .mobile-nav {
+    animation: drive-enter 200ms var(--motion-ease);
+  }
+  .reference-site .button > svg {
+    transition: transform var(--motion-fast) var(--motion-ease);
+  }
+  .reference-site .button:hover > svg {
+    transform: translateX(3px);
+  }
+  .reference-site .reference-body-types button svg {
+    transition: transform 220ms var(--motion-ease);
+  }
+  .reference-site .reference-body-types button[aria-pressed="true"] svg {
+    transform: translateY(-4px);
+  }
+  .reference-site .pending-spinner {
+    animation: drive-spin 800ms linear infinite;
+  }
+}
+@keyframes drive-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes drive-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (max-width: 600px) {
+  .reference-site .whatsapp-dialog-inner {
+    padding: 24px 20px;
+  }
+  .reference-site .whatsapp-brand {
+    font-size: 26px;
+    padding-top: 0;
+    padding-bottom: 8px;
+  }
+  .reference-site .whatsapp-progress {
+    margin: 16px 0;
+  }
+  .reference-site .whatsapp-description {
+    margin: 16px 0;
+  }
+  .reference-site .whatsapp-symbol {
+    width: 60px;
+    height: 60px;
+  }
+}

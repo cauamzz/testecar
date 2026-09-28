@@ -1,0 +1,10 @@
+node_modules
+.next
+.next-*
+.git
+.agents
+package-lock.json
+test-results
+playwright-report
+public
+supabase/migrations

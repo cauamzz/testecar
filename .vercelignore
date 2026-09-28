@@ -1,0 +1,14 @@
+.git
+.agents
+AGENTS.md
+.next*
+.production-build
+node_modules
+.env*
+!.env.example
+test-results
+playwright-report
+*.log
+*.tsbuildinfo
+supabase/.temp
+supabase/.branches
