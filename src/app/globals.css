@@ -1919,7 +1919,6 @@ ul {
   }
   .detail-summary {
     position: static;
-    grid-row: 1;
   }
   .detail-summary h1 {
     font-size: 37px;
