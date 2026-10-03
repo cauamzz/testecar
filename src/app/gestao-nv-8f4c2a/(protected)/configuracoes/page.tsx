@@ -5,7 +5,9 @@ export default async function SettingsPage() {
   const { client } = await requireAdmin("settings.write");
   const { data, error } = await client
     .from("site_settings")
-    .select("instagram,facebook,whatsapp")
+    .select(
+      "instagram,facebook,whatsapp,whatsapp_financing,whatsapp_sales,whatsapp_purchase",
+    )
     .eq("id", 1)
     .single();
   if (error) throw new Error("Não foi possível consultar as configurações.");

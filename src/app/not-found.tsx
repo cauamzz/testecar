@@ -40,7 +40,7 @@ export default async function NotFound() {
   return (
     <div className={`reference-site ${exo.className}`}>
       <CookieConsentProvider>
-        <WhatsAppProvider storeName={settings.store_name}>
+        <WhatsAppProvider storeName={settings.store_name} channels={settings}>
           <Header settings={settings} />
           <main id="main-content">
             {/* Faixa de cabeçalho */}
@@ -70,8 +70,8 @@ export default async function NotFound() {
                 {/* Mensagem + ações */}
                 <div className="notfound-body">
                   <p className="notfound-lead">
-                    Pode ter sido um link antigo, um endereço digitado errado
-                    ou uma página que saiu do ar. De qualquer forma, você não
+                    Pode ter sido um link antigo, um endereço digitado errado ou
+                    uma página que saiu do ar. De qualquer forma, você não
                     perdeu nada — o estoque está inteiro.
                   </p>
 

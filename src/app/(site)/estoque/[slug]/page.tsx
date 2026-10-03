@@ -11,7 +11,7 @@ import {
   Palette,
   CircleGauge,
 } from "lucide-react";
-import { getInventory, getSettings, getVehicle } from "@/lib/data";
+import { getInventory, getVehicle } from "@/lib/data";
 import { money, number, siteUrl } from "@/lib/utils";
 import { VehicleGallery } from "@/components/vehicle-gallery";
 import { VehicleCard } from "@/components/vehicle-card";
@@ -40,10 +40,11 @@ export default async function VehiclePage({
   const { slug } = await params;
   const v = await getVehicle(slug);
   if (!v) notFound();
-  const [settings, { vehicles }] = await Promise.all([
-    getSettings(),
-    getInventory({exclude:v.id,preferred_body:v.body_type},1,3),
-  ]);
+  const { vehicles } = await getInventory(
+    { exclude: v.id, preferred_body: v.body_type },
+    1,
+    3,
+  );
   const name = `${v.brand} ${v.model} ${v.version}`;
   const related = vehicles;
   const specs = [
@@ -157,7 +158,7 @@ export default async function VehiclePage({
           </span>
         </aside>
       </div>
-      <VehicleDetailsTabs vehicle={v} whatsapp={settings.whatsapp} />
+      <VehicleDetailsTabs vehicle={v} />
       {related.length > 0 && (
         <section className="related-section">
           <div className="section-heading">

@@ -11,15 +11,12 @@ import {
 import { LeadForm } from "./lead-form";
 import { WhatsAppButton } from "@/components/whatsapp-provider";
 import { WhatsAppIcon } from "./whatsapp-icon";
+import { contactNumber } from "@/lib/whatsapp-routing";
+import { useContactChannels } from "./whatsapp-provider";
 import { whatsappUrl } from "@/lib/utils";
 import type { Vehicle } from "@/lib/types";
-export function VehicleDetailsTabs({
-  vehicle: v,
-  whatsapp,
-}: {
-  vehicle: Vehicle;
-  whatsapp: string;
-}) {
+export function VehicleDetailsTabs({ vehicle: v }: { vehicle: Vehicle }) {
+  const channels = useContactChannels();
   const [tab, setTab] = useState(0);
   const [copied, setCopied] = useState("");
   const id = useId();
@@ -133,7 +130,14 @@ export function VehicleDetailsTabs({
                     <span>Atendimento da loja</span>
                     <WhatsAppButton
                       href={whatsappUrl(
-                        whatsapp,
+                        contactNumber(
+                          channels,
+                          i === 2
+                            ? "financing"
+                            : i === 3
+                              ? "sell_vehicle"
+                              : "vehicle_interest",
+                        ),
                         `Olá! Tenho interesse no ${name}.`,
                       )}
                     >
@@ -141,7 +145,14 @@ export function VehicleDetailsTabs({
                       <div>
                         <small>Equipe NovaDrive Motors</small>
                         <strong>
-                          {whatsapp
+                          {contactNumber(
+                            channels,
+                            i === 2
+                              ? "financing"
+                              : i === 3
+                                ? "sell_vehicle"
+                                : "vehicle_interest",
+                          )
                             ? "Converse no WhatsApp"
                             : "Fale com nossa equipe"}
                         </strong>

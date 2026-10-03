@@ -10,7 +10,7 @@ import {
   LoaderCircle,
   X,
 } from "lucide-react";
-import { submitLead } from "@/app/actions";
+import { leadSchema } from "@/lib/validation";
 import { WhatsAppIcon } from "./whatsapp-icon";
 
 export default function WhatsAppDialog({
@@ -121,10 +121,10 @@ export default function WhatsAppDialog({
         </p>
         {!hasDestination && (
           <p className="whatsapp-availability" role="status">
-            O número de WhatsApp ainda não está disponível. Você pode conhecer
-            as etapas abaixo ou{" "}
+            O número de WhatsApp ainda não está disponível. Tente novamente mais
+            tarde ou consulte as informações da loja em{" "}
             <Link href="/contato" onClick={close}>
-              enviar uma mensagem pelo Contato
+              Contato
             </Link>
             .
           </p>
@@ -143,7 +143,7 @@ export default function WhatsAppDialog({
             if (pending) return;
             if (!hasDestination) {
               setError(
-                "O WhatsApp está temporariamente indisponível. Você pode enviar sua mensagem pela página Contato.",
+                "O WhatsApp está temporariamente indisponível. Tente novamente mais tarde.",
               );
               return;
             }
@@ -153,7 +153,7 @@ export default function WhatsAppDialog({
               const original =
                 new URL(destination).searchParams.get("text") ||
                 "Olá! Gostaria de falar com a equipe.";
-              const result = await submitLead({
+              const result = leadSchema.safeParse({
                 ...contact,
                 type: "contact",
                 vehicle_id: null,
@@ -165,8 +165,8 @@ export default function WhatsAppDialog({
                 website: "",
               });
               if (!active.current) return;
-              if (!result.ok) {
-                setError(result.message);
+              if (!result.success) {
+                setError("Confira seus dados e autorize o contato.");
                 return;
               }
               const url = new URL(destination);

@@ -31,6 +31,7 @@ test("WhatsApp dialog validates steps, retains data, handles failure and restore
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/contato");
+  await page.getByRole("button", { name: "Recusar opcionais" }).click();
   const trigger = page.locator(".whatsapp-float");
   await trigger.click();
   const dialog = page.getByRole("dialog");
@@ -71,7 +72,9 @@ test("WhatsApp dialog validates steps, retains data, handles failure and restore
   await expect(trigger).toBeFocused();
 });
 
-test("filters update instantly without a server request", async ({ page }) => {
+test("filters query the server and retain their URL state", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/estoque");
   const requests: string[] = [];
@@ -90,7 +93,7 @@ test("filters update instantly without a server request", async ({ page }) => {
   await expect(
     page.getByRole("button", { name: "Remover filtro Preço máximo" }),
   ).toBeVisible();
-  expect(requests).toEqual([]);
+  expect(requests.length).toBeGreaterThan(0);
   await page.reload();
   await expect(page.getByLabel("Preço máximo (R$)")).toHaveValue("80000");
   await page
@@ -101,10 +104,12 @@ test("filters update instantly without a server request", async ({ page }) => {
   await page
     .getByRole("button", { name: "Aplicar filtros", exact: true })
     .click();
+  await expect(page).toHaveURL(/price_max=50000/);
   await page
     .getByRole("navigation", { name: "Navegação principal" })
     .getByRole("link", { name: "Estoque", exact: true })
     .click();
+  await expect(page).toHaveURL(/\/estoque$/);
   await expect(page.getByLabel("Preço máximo (R$)")).toHaveValue("");
   await expect(page.locator(".filter-chip")).toHaveCount(0);
 });

@@ -18,8 +18,9 @@ export function AdminNav({ membership }: { membership: Membership }) {
   const links = [
     ["/gestao-nv-8f4c2a", "Visão geral", LayoutDashboard],
     ["/gestao-nv-8f4c2a/estoque", "Estoque", CarFront],
+    ["/gestao-nv-8f4c2a/vendas", "Vendas", CarFront],
     ["/gestao-nv-8f4c2a/leads", "Contatos", MessagesSquare],
-    ["/gestao-nv-8f4c2a/configuracoes", "Meu site", Settings2],
+    ["/gestao-nv-8f4c2a/configuracoes", "WhatsApp e redes", Settings2],
     ["/gestao-nv-8f4c2a/usuarios", "Usuários", UserRound],
     ["/gestao-nv-8f4c2a/conta", "Minha conta", UserRound],
   ] as const;
@@ -32,6 +33,7 @@ export function AdminNav({ membership }: { membership: Membership }) {
           .filter(([href]) => {
             const permissions: Record<string, Permission | "users.manage"> = {
               "/gestao-nv-8f4c2a/estoque": "stock.read",
+              "/gestao-nv-8f4c2a/vendas": "stock.read",
               "/gestao-nv-8f4c2a/leads": "leads.read",
               "/gestao-nv-8f4c2a/configuracoes": "settings.write",
               "/gestao-nv-8f4c2a/usuarios": "users.manage",
@@ -43,7 +45,8 @@ export function AdminNav({ membership }: { membership: Membership }) {
               href={href}
               key={href}
               className={
-                path === href || (href !== "/gestao-nv-8f4c2a" && path.startsWith(href))
+                path === href ||
+                (href !== "/gestao-nv-8f4c2a" && path.startsWith(href))
                   ? "active"
                   : ""
               }

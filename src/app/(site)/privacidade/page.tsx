@@ -93,9 +93,8 @@ export default async function Privacy() {
           No atendimento por WhatsApp, perguntamos se você possui restrições de
           crédito, sem solicitar o número do CPF. Você pode preferir conversar
           sobre isso com a equipe. Após sua autorização, os dados de contato e
-          sua resposta são registrados com a solicitação e incluídos na mensagem
-          preparada para o WhatsApp. Você decide se deseja enviar essa mensagem
-          no aplicativo.
+          sua resposta são incluídos na mensagem preparada para o WhatsApp. Você
+          decide se deseja enviar essa mensagem no aplicativo.
         </p>
         <p>
           Usamos os dados para responder ao seu pedido, acompanhar o atendimento
@@ -104,9 +103,12 @@ export default async function Privacy() {
         </p>
         <h2>Armazenamento e acesso</h2>
         <p>
-          As solicitações são armazenadas no Supabase e acessadas pelos
-          administradores autorizados da loja. Dados podem ser mantidos durante
-          o atendimento e pelo período necessário ao cumprimento das obrigações
+          Os formulários preparam a mensagem no seu navegador e abrem o
+          WhatsApp; os novos contatos não são gravados no banco do site. Os
+          contatos registrados anteriormente permanecem no Supabase, acessíveis
+          somente à equipe autorizada. As conversas enviadas pelo WhatsApp
+          seguem as regras desse serviço. Dados podem ser mantidos durante o
+          atendimento e pelo período necessário ao cumprimento das obrigações
           aplicáveis. A loja deve revisar periodicamente os registros que não
           são mais necessários.
         </p>

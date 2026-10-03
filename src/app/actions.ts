@@ -255,6 +255,31 @@ export async function saveSettings(input: unknown): Promise<ActionResult> {
   refresh();
   return { ok: true, message: "Canais de contato atualizados." };
 }
+export async function recordVehicleSale(input: unknown): Promise<ActionResult> {
+  const { client } = await requireAdmin("stock.write");
+  const parsed = z
+    .object({
+      vehicle_id: z.uuid(),
+      actual_price: z.coerce.number().positive().max(9999999999.99),
+    })
+    .strict()
+    .safeParse(input);
+  if (!parsed.success)
+    return fail("Informe um veículo e um valor de venda válido.");
+  const { error } = await client.rpc("record_vehicle_sale", {
+    p_vehicle_id: parsed.data.vehicle_id,
+    p_actual_price: parsed.data.actual_price,
+  });
+  if (error)
+    return fail(
+      "Não foi possível registrar a venda. Confira sua sessão e tente novamente.",
+    );
+  refresh();
+  return {
+    ok: true,
+    message: "Valor de venda registrado. O veículo está marcado como vendido.",
+  };
+}
 export async function logout() {
   const client = await serverClient();
   await client?.auth.signOut();

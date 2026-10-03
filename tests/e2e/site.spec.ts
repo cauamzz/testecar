@@ -79,9 +79,9 @@ test("sell form retains details across steps and does not fake success without b
   await page.getByLabel("WhatsApp", { exact: true }).fill("11999991234");
   await page.getByLabel("E-mail", { exact: true }).fill("teste@example.com");
   await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: "Enviar mensagem" }).click();
+  await page.getByRole("button", { name: "Continuar no WhatsApp" }).click();
   await expect(page.locator('.form-notice[role="alert"]')).toContainText(
-    "temporariamente indisponível",
+    "ainda não foi configurado",
   );
   await expect(page.getByLabel("Seu nome")).toHaveValue("Pessoa Teste");
 });
@@ -98,7 +98,7 @@ test("admin is protected and missing vehicles show 404", async ({ page }) => {
     page.locator('meta[name="robots"][content="noindex"]').first(),
   ).toBeAttached();
   await expect(
-    page.getByRole("heading", { name: "Vamos voltar para a rota certa?" }),
+    page.getByRole("heading", { name: "Essa página não existe" }),
   ).toBeVisible();
 });
 test("main pages meet automated accessibility checks", async ({ page }) => {

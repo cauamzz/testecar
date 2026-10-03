@@ -8,7 +8,15 @@ import { FormNotice } from "@/components/ui";
 export function SettingsEditor({
   settings,
 }: {
-  settings: Pick<Settings, "instagram" | "facebook" | "whatsapp">;
+  settings: Pick<
+    Settings,
+    | "instagram"
+    | "facebook"
+    | "whatsapp"
+    | "whatsapp_financing"
+    | "whatsapp_sales"
+    | "whatsapp_purchase"
+  >;
 }) {
   const [pending, start] = useTransition();
   const [notice, setNotice] = useState<ActionResult | null>(null);
@@ -34,6 +42,9 @@ export function SettingsEditor({
               instagram: fd.get("instagram"),
               facebook: fd.get("facebook"),
               whatsapp,
+              whatsapp_financing: fd.get("whatsapp_financing"),
+              whatsapp_sales: fd.get("whatsapp_sales"),
+              whatsapp_purchase: fd.get("whatsapp_purchase"),
             });
             setNotice(result);
             if (result.ok) router.refresh();
@@ -91,7 +102,7 @@ export function SettingsEditor({
               <small id="facebook-help">Informe o @ ou o link da página.</small>
             </label>
             <fieldset className="whatsapp-settings full-width">
-              <legend>WhatsApp que recebe as mensagens</legend>
+              <legend>WhatsApp geral (contato e atendimento)</legend>
               <p>
                 Preencha o DDD da sua cidade e o número que usa no WhatsApp.
               </p>
@@ -164,6 +175,30 @@ export function SettingsEditor({
                 )}
               </div>
             </fieldset>
+          </div>
+          <div className="form-grid">
+            {(
+              [
+                ["whatsapp_financing", "Financiamento"],
+                ["whatsapp_sales", "Interesse em veículos"],
+                ["whatsapp_purchase", "Venda ou troca do veículo do cliente"],
+              ] as const
+            ).map(([key, label]) => (
+              <label className="field" key={key}>
+                WhatsApp · {label}
+                <input
+                  name={key}
+                  type="tel"
+                  defaultValue={settings[key]}
+                  maxLength={30}
+                  placeholder="(11) 99999-9999"
+                  aria-describedby={`${key}-help`}
+                />
+                <small id={`${key}-help`}>
+                  Informe DDD e número. Vazio usa o WhatsApp geral.
+                </small>
+              </label>
+            ))}
           </div>
           <p className="staff-help">
             Deixe uma rede social vazia para ocultar seu botão. Sem WhatsApp

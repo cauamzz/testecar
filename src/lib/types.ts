@@ -39,6 +39,9 @@ export type Settings = {
   store_name: string;
   logo: string;
   whatsapp: string;
+  whatsapp_financing: string;
+  whatsapp_sales: string;
+  whatsapp_purchase: string;
   phone: string;
   email: string;
   instagram: string;

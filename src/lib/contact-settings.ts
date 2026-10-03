@@ -50,19 +50,23 @@ const socialField = (network: "instagram" | "facebook") =>
       }
       return url;
     });
+const phoneField = z
+  .string()
+  .trim()
+  .max(30)
+  .regex(/^[\d\s()+-]*$/, "Confira o número do WhatsApp.")
+  .transform((value) => value.replace(/\D/g, ""))
+  .refine(
+    (value) => value === "" || /^(?:55)?[1-9][0-9]{9,10}$/.test(value),
+    "Informe o WhatsApp com DDD, usando 10 ou 11 dígitos (55 opcional).",
+  );
 export const contactSettingsSchema = z
   .object({
     instagram: socialField("instagram"),
     facebook: socialField("facebook"),
-    whatsapp: z
-      .string()
-      .trim()
-      .max(30)
-      .regex(/^[\d\s()+-]*$/, "Confira o número do WhatsApp.")
-      .transform((value) => value.replace(/\D/g, ""))
-      .refine(
-        (value) => value === "" || /^(?:55)?[1-9][0-9]{9,10}$/.test(value),
-        "Informe o WhatsApp com DDD, usando 10 ou 11 dígitos (55 opcional).",
-      ),
+    whatsapp: phoneField,
+    whatsapp_financing: phoneField.optional(),
+    whatsapp_sales: phoneField.optional(),
+    whatsapp_purchase: phoneField.optional(),
   })
   .strict();

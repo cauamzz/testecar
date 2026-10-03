@@ -24,7 +24,7 @@ import { ServiceIllustration } from "@/components/service-illustration";
 import { Suspense } from "react";
 import type { Settings } from "@/lib/types";
 export default async function Home() {
-  const inventory = getInventory({sort:"featured"},1,5);
+  const inventory = getInventory({ sort: "featured" }, 1, 5);
   const facets = getInventoryFacets();
   const settings = await getSettings();
   return (
@@ -38,20 +38,28 @@ export default async function Home() {
           </div>
         }
       >
-        <HomeContent inventory={inventory} settings={settings} facetsPromise={facets} />
+        <HomeContent
+          inventory={inventory}
+          settings={settings}
+          facetsPromise={facets}
+        />
       </Suspense>
     </>
   );
 }
 async function HomeContent({
   inventory,
-  settings, facetsPromise,
+  settings,
+  facetsPromise,
 }: {
   inventory: ReturnType<typeof getInventory>;
   facetsPromise: ReturnType<typeof getInventoryFacets>;
   settings: Settings;
 }) {
-  const [{ vehicles, unavailable }, {facets}] = await Promise.all([inventory,facetsPromise]);
+  const [{ vehicles, unavailable }, { facets }] = await Promise.all([
+    inventory,
+    facetsPromise,
+  ]);
   const selection = [...vehicles]
     .sort((a, b) => Number(b.featured) - Number(a.featured))
     .slice(0, 5);
@@ -183,14 +191,11 @@ async function HomeContent({
             <ServiceIllustration finance />
             <h2>Financiamento NovaDrive</h2>
             <p>
-              Encontre uma opção que acompanhe seus planos. Envie sua proposta e
-              nossa equipe entra em contato para orientar você.
+              Encontre uma opção que acompanhe seus planos. Converse pelo
+              WhatsApp e nossa equipe entra em contato para orientar você.
             </p>
           </div>
-          <LeadForm
-            type="financing"
-            compact
-          />
+          <LeadForm type="financing" compact />
         </div>
       </section>
       <section className="reference-location" id="localizacao">

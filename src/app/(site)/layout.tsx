@@ -45,7 +45,15 @@ export default async function SiteLayout({
     <div className={`reference-site ${exo.className}`}>
       <CookieConsentProvider>
         <GoogleAnalytics />
-        <WhatsAppProvider storeName={settings.store_name}>
+        <WhatsAppProvider
+          storeName={settings.store_name}
+          channels={{
+            whatsapp: settings.whatsapp,
+            whatsapp_financing: settings.whatsapp_financing,
+            whatsapp_sales: settings.whatsapp_sales,
+            whatsapp_purchase: settings.whatsapp_purchase,
+          }}
+        >
           <Header settings={settings} />
           <main id="main-content">{children}</main>
           <Footer settings={settings} />

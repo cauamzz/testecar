@@ -65,9 +65,119 @@ beforeAll(async () => {
       "utf8",
     ),
   );
+  await db.exec(
+    readFileSync("supabase/migrations/202610030001_whatsapp_sales.sql", "utf8"),
+  );
 });
 afterAll(async () => {
   await db.close();
+});
+describe("Private negotiated sale prices", () => {
+  it("records atomically, preserves listing price, corrects amounts and clears on reopening", async () => {
+    await role("postgres");
+    const id = "88888888-8888-4888-8888-888888888888";
+    await db.query(
+      "insert into public.vehicles(id,slug,brand,model,year_manufacture,year_model,price,mileage,status) values($1,'negotiated-test','Test','Sale',2023,2024,100000,0,'draft')",
+      [id],
+    );
+    await role("authenticated", admin);
+    await db.query("select public.record_vehicle_sale($1,95000.50)", [id]);
+    expect(
+      (
+        await db.query(
+          "select status,price,sold_advertised_price from public.vehicles where id=$1",
+          [id],
+        )
+      ).rows[0],
+    ).toEqual({
+      status: "sold",
+      price: "100000.00",
+      sold_advertised_price: "100000.00",
+    });
+    await db.query("select public.record_vehicle_sale($1,94000)", [id]);
+    expect(
+      (
+        await db.query(
+          "select actual_price from public.vehicle_sales where vehicle_id=$1",
+          [id],
+        )
+      ).rows[0],
+    ).toEqual({ actual_price: "94000.00" });
+    await expect(
+      db.query("select public.record_vehicle_sale($1,0)", [id]),
+    ).rejects.toThrow();
+    await expect(
+      db.query(
+        "update public.vehicle_sales set actual_price='NaN'::numeric where vehicle_id=$1",
+        [id],
+      ),
+    ).rejects.toThrow();
+    await role("anon");
+    await expect(
+      db.query("select * from public.vehicle_sales"),
+    ).rejects.toThrow();
+    await expect(
+      db.query("select public.record_vehicle_sale($1,90000)", [id]),
+    ).rejects.toThrow();
+    await role("authenticated", other);
+    expect(
+      (await db.query("select * from public.vehicle_sales")).rows,
+    ).toHaveLength(0);
+    await expect(
+      db.query("select public.record_vehicle_sale($1,90000)", [id]),
+    ).rejects.toThrow();
+    await role("authenticated", admin);
+    await db.query("update public.vehicles set status='draft' where id=$1", [
+      id,
+    ]);
+    expect(
+      (
+        await db.query(
+          "select * from public.vehicle_sales where vehicle_id=$1",
+          [id],
+        )
+      ).rows,
+    ).toHaveLength(0);
+    await expect(
+      db.query(
+        "insert into public.vehicle_sales(vehicle_id,actual_price) values($1,1)",
+        [id],
+      ),
+    ).rejects.toThrow();
+    await db.query("delete from public.vehicles where id=$1", [id]);
+  });
+  it("restricts destination changes to settings permission", async () => {
+    await role("anon");
+    await expect(
+      db.exec(
+        "update public.site_settings set whatsapp_financing='11922222222' where id=1",
+      ),
+    ).rejects.toThrow();
+    await role("authenticated", other);
+    expect(
+      (
+        await db.query(
+          "update public.site_settings set whatsapp_financing='11922222222' where id=1 returning id",
+        )
+      ).rows,
+    ).toHaveLength(0);
+    await role("authenticated", admin);
+    expect(
+      (
+        await db.query(
+          "update public.site_settings set whatsapp_financing='11922222222' where id=1 returning id",
+        )
+      ).rows,
+    ).toHaveLength(1);
+    await expect(
+      db.exec(
+        "update public.site_settings set whatsapp_purchase='invalid' where id=1",
+      ),
+    ).rejects.toThrow();
+    await db.exec(
+      "update public.site_settings set whatsapp_financing='' where id=1",
+    );
+  });
 });
 describe("Operator demonstration seed safety", () => {
   it("changes only the eight named demos and restores snapshot enforcement", async () => {

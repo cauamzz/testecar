@@ -2,7 +2,8 @@
 import { useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { ArrowUpRight, CheckCircle2 } from "lucide-react";
-import { submitLead } from "@/app/actions";
+import { prepareWhatsApp } from "@/lib/whatsapp-routing";
+import { useContactChannels } from "./whatsapp-provider";
 import type { ActionResult, Vehicle } from "@/lib/types";
 import { FormNotice } from "./ui";
 import { VehiclePicker } from "./vehicle-picker";
@@ -20,6 +21,8 @@ export function LeadForm({
   vehicleName?: string;
   compact?: boolean;
 }) {
+  const channels = useContactChannels();
+  const [destination, setDestination] = useState("");
   const [selectedVehicle, setSelectedVehicle] = useState(
     vehicles.find((v) => v.id === vehicleId),
   );
@@ -102,17 +105,25 @@ export function LeadForm({
     setResult(null);
     startTransition(async () => {
       try {
-        const res = await submitLead({
-          type,
-          name: fd.get("name"),
-          phone: fd.get("phone"),
-          email: fd.get("email"),
-          message: fd.get("message") || "",
-          vehicle_id: String(fd.get("vehicle_id") || selectedVehicleId) || null,
-          details,
-          consent: fd.get("consent") === "on",
-          website: fd.get("website") || "",
-        });
+        const res = prepareWhatsApp(
+          {
+            type,
+            name: fd.get("name"),
+            phone: fd.get("phone"),
+            email: fd.get("email"),
+            message: fd.get("message") || "",
+            vehicle_id:
+              String(fd.get("vehicle_id") || selectedVehicleId) || null,
+            details,
+            consent: fd.get("consent") === "on",
+            website: fd.get("website") || "",
+          },
+          channels,
+        );
+        if (res.ok && res.url) {
+          setDestination(res.url);
+          window.location.assign(res.url);
+        }
         setResult(res);
       } catch {
         setResult({
@@ -127,11 +138,14 @@ export function LeadForm({
     return (
       <div className="lead-form">
         <CheckCircle2 size={42} color="#176448" />
-        <h2 style={{ marginTop: 20 }}>Mensagem recebida.</h2>
+        <h2 style={{ marginTop: 20 }}>Sua conversa está pronta.</h2>
         <FormNotice {...result} />
+        <a className="button button-green" href={destination}>
+          Abrir WhatsApp
+        </a>
         <p>
-          Agora é com a nossa equipe. Vamos usar os contatos que você informou
-          para continuar a conversa.
+          Confirme o envio da mensagem no WhatsApp para falar com a equipe.
+          Nenhuma proposta foi registrada no site.
         </p>
         <button
           className="button button-outline"
@@ -157,7 +171,7 @@ export function LeadForm({
         {type === "sell_vehicle"
           ? "Conte sobre o seu carro"
           : type === "financing"
-            ? "Vamos montar sua proposta?"
+            ? "Vamos conversar sobre financiamento?"
             : type === "vehicle_interest"
               ? "Gostou deste carro?"
               : "Fale com nossa equipe"}
@@ -165,7 +179,7 @@ export function LeadForm({
       <p>
         {type === "sell_vehicle"
           ? "Uma etapa de cada vez. É rápido e sem compromisso."
-          : "Preencha seus dados e a equipe continua o atendimento com você."}
+          : "Preencha seus dados e continue o atendimento pelo WhatsApp."}
       </p>
       {(type === "sell_vehicle" || (compact && type === "financing")) && (
         <>
@@ -182,7 +196,7 @@ export function LeadForm({
             ETAPA {step + 1} DE {type === "financing" ? 2 : 4} ·{" "}
             {
               (type === "financing"
-                ? ["Sua proposta", "Seu contato"]
+                ? ["Seu financiamento", "Seu contato"]
                 : ["Seu veículo", "Os detalhes", "Algo mais?", "Seu contato"])[
                 step
               ]
@@ -396,13 +410,11 @@ export function LeadForm({
           )}
         <button className="button button-green" disabled={pending}>
           {pending
-            ? "Enviando…"
+            ? "Preparando…"
             : (type === "sell_vehicle" && step < 3) ||
                 (compact && type === "financing" && step === 0)
               ? "Continuar"
-              : type === "financing"
-                ? "Enviar proposta"
-                : "Enviar mensagem"}
+              : "Continuar no WhatsApp"}
           <ArrowUpRight size={18} />
         </button>
       </div>

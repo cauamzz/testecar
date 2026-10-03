@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/financiamento" },
   title: "Financiamento",
   description:
-    "Envie sua proposta de financiamento e converse com a equipe NovaDrive sobre as opções para seu próximo carro.",
+    "Converse pelo WhatsApp com a equipe NovaDrive sobre financiamento para seu próximo carro.",
 };
 export default async function Financing({
   searchParams,
@@ -45,7 +45,7 @@ export default async function Financing({
           <ul className="check-list">
             <li>
               <Check size={18} />
-              Proposta sem compromisso
+              Conversa sem compromisso
             </li>
             <li>
               <Check size={18} />
@@ -59,7 +59,7 @@ export default async function Financing({
           <WhatsAppButton
             className="text-link"
             href={whatsappUrl(
-              settings.whatsapp,
+              settings.whatsapp_financing || settings.whatsapp,
               "Olá! Gostaria de saber mais sobre financiamento.",
             )}
           >
